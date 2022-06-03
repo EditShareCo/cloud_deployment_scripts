@@ -69,10 +69,13 @@ variable "admin_ssh_pub_key_file" {
   description = "Admin SSH public key file"
   type        = string
 
-  validation {
-    condition = fileexists(var.admin_ssh_pub_key_file)
-    error_message = "The admin_ssh_pub_key_file specified does not exist. Please check the file path."
-  }
+    # Removing validation as the file is not required for the editshare version of code
+    # Supplying a default so we don't have to supply a variable
+    default     = ""
+  # validation {
+  #   condition = fileexists(var.admin_ssh_pub_key_file)
+  #   error_message = "The admin_ssh_pub_key_file specified does not exist. Please check the file path."
+  # }
 }
 
 variable "vpc_name" {
