@@ -252,11 +252,11 @@ resource "aws_instance" "cas-connector" {
     volume_size = var.disk_size_gb
   }
 
-  associate_public_ip_address = true
+  ###associate_public_ip_address = true
 
   vpc_security_group_ids = var.security_group_ids
 
-  key_name = var.admin_ssh_key_name
+  key_name = var.keypair_name ### var.admin_ssh_key_name
 
   iam_instance_profile = aws_iam_instance_profile.cas-connector-instance-profile[0].name
 

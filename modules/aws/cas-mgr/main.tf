@@ -195,17 +195,20 @@ resource "aws_instance" "cas-mgr" {
 
   ami           = data.aws_ami.ami.id
   instance_type = var.instance_type
+  ### FIXME
+  key_name      = var.keypair_name
+
 
   root_block_device {
     volume_type = "gp2"
     volume_size = var.disk_size_gb
   }
 
-  associate_public_ip_address = var.enable_public_ip
+  ###associate_public_ip_address = var.enable_public_ip
 
   vpc_security_group_ids = var.security_group_ids
 
-  key_name = var.admin_ssh_key_name
+  ###key_name = var.admin_ssh_key_name
 
   iam_instance_profile = aws_iam_instance_profile.cas-mgr-instance-profile.name
 
