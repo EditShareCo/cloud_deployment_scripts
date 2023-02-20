@@ -5,12 +5,12 @@
 
 #!/bin/bash
 
+PROVISIONING_DIR="/root"
 CAS_CONNECTOR_BIN_PATH="/usr/local/bin/cas-connector"
 CAS_CONNECTOR_REPO_SETUP_SCRIPT_URL="https://dl.teradici.com/${teradici_download_token}/cas-manager-beta/cfg/setup/bash.rpm.sh"
 CAS_CONNECTOR_INSTALL_LOG="/var/log/teradici/cas-connector-install.log"
 CONNECTOR_TOKEN_FILE=$PROVISIONING_DIR/connector_token
 LOG_FILE="/var/log/teradici/provisioning.log"
-PROVISIONING_DIR="/root"
 
 log() {
     local message="$1"
@@ -123,6 +123,7 @@ get_connector_token() {
     dos2unix $PROVISIONING_DIR/${cas_mgr_script}
     dos2unix $PROVISIONING_DIR/${cas_mgr_deployment_sa_file}
 
+    # EditShare
     # Set CONNECTOR_TOKEN variable using the script's output
     if [ "${cas_mgr_insecure}" ]
     then
@@ -133,7 +134,7 @@ get_connector_token() {
     set +x
     CONNECTOR_TOKEN=`cat $CONNECTOR_TOKEN_FILE`
     set -x
-    rm $CONNECTOR_TOKEN_FILE
+    #rm $CONNECTOR_TOKEN_FILE
 
     # Check and exit provisioning script if retrieving connector token failed
     if [ $? -ne 0 ]; then
@@ -281,7 +282,7 @@ configure_cas_connector() {
     log "  --retrieve-agent-state true"
     log "  --show-agent-state true"
     log "  --sync-interval 5"
-    log "  --casm-url ${cas_mgr_url}"
+    log "  --manager-url ${cas_mgr_url}"
     log "  ${cas_connector_extra_install_flags}"
 
     # Set pipefail option to return status of the connector install command
@@ -309,8 +310,8 @@ configure_cas_connector() {
 
     if [ "${cas_mgr_insecure}" ]
     then
-        log "  --casm-insecure"
-        args=$args"--casm-insecure "
+        log "  --manager-insecure"
+        args=$args"--manager-insecure "
     fi
 
     if [ "${lls_ip}" ]
@@ -319,6 +320,27 @@ configure_cas_connector() {
         args=$args"--local-license-server-url http://${lls_ip}:7070/request "
     fi
 
+    # EditShare save the connect command to a local file just in case
+    cat << EOF > connect.sh
+export CONNECTOR_TOKEN=`cat connector_token` 
+$CAS_CONNECTOR_BIN_PATH configure \
+--debug \
+--token $CONNECTOR_TOKEN \
+--accept-policies \
+--computers-dn ${computers_dn} \
+--users-dn ${users_dn} \
+--sa-user ${ad_service_account_username} \
+--sa-password $AD_SERVICE_ACCOUNT_PASSWORD \
+--domain ${domain_name} \
+--ldaps-ca-cert $PROVISIONING_DIR/${ldaps_cert_filename} \
+--retrieve-agent-state true \
+--show-agent-state true \
+--sync-interval 5 \
+--manager-url ${cas_mgr_url} \
+--manager-insecure
+EOF
+
+    # EditShare use args manager-url and manager-insecure
     set +x
     retry 10 `# 10 retries` \
         10 `# 10s interval` \
@@ -335,7 +357,7 @@ configure_cas_connector() {
         --retrieve-agent-state true \
         --show-agent-state true \
         --sync-interval 5 \
-        --casm-url ${cas_mgr_url} \
+        --manager-url ${cas_mgr_url} \
         ${cas_connector_extra_install_flags} \
         $args \
         2>&1 | tee -a $CAS_CONNECTOR_INSTALL_LOG" \

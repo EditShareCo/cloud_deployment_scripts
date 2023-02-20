@@ -190,3 +190,8 @@ variable "aws_ssm_enable" {
   description = "Enable AWS Session Manager integration for easier SSH/RDP admin access to EC2 instances"
   default     = true
 }
+
+variable "keypair_name" {
+  description = "key name to use for accessing the AWS Instances"
+}
+
