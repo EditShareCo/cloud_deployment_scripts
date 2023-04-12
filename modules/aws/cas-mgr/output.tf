@@ -16,3 +16,8 @@ output "public-ip" {
 output "instance-id" {
   value = aws_instance.cas-mgr.id
 }
+
+output "cas-mgr-role-id" {
+  value = aws_iam_role.cas-mgr-role.id
+}
+

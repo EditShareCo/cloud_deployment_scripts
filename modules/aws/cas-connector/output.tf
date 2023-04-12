@@ -16,3 +16,8 @@ output "public-ip" {
 output "instance-id" {
   value = aws_instance.cas-connector[*].id
 }
+
+output "cas-connector-role-id" {
+  value = aws_iam_role.cas-connector-role[0].id
+}
+
