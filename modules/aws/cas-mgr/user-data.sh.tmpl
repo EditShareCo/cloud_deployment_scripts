@@ -58,6 +58,10 @@ then
 
         # Make aws available for root later
         ln -s /usr/local/bin/aws /usr/bin/aws
+
+        # Install ssm-agent
+        log "Installing ssm-agent"
+        dnf install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
     fi
 
     # wait until we have IAM credentials
