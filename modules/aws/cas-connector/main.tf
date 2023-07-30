@@ -260,6 +260,19 @@ resource "aws_instance" "cas-connector" {
 
   user_data = data.template_file.user-data.rendered
 
+  lifecycle {
+    ignore_changes = [
+      # Since the DC runs on a standard AWS Windows Server, it's possible that
+      # AWS will eventually age out the AMI used to initially deploy the DC,
+      # so we ignore AMI changes here
+      ami,
+      # if the ec2 instance_type is changed from the AWS Console, it will
+      # cause terraform to think the ebs_optimized field has changed and
+      # the instance will be replaced, so we ignore that field here
+      ebs_optimized,
+    ]
+  }
+
   tags = {
     Name = "${local.prefix}${var.host_name}-${count.index}"
   }
