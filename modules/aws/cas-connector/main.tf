@@ -262,6 +262,10 @@ resource "aws_instance" "cas-connector" {
 
   lifecycle {
     ignore_changes = [
+      # Ignore changes to user_data, since we only use it when
+      # the node initializes and we do not want subsequent
+      # enhancements to user_data to cause the node to be replaced
+      user_data,
       # Since the DC runs on a standard AWS Windows Server, it's possible that
       # AWS will eventually age out the AMI used to initially deploy the DC,
       # so we ignore AMI changes here
