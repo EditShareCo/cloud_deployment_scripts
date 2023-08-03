@@ -205,7 +205,7 @@ resource "aws_instance" "cas-mgr" {
       {
         Name = "vol-${var.prefix}-sda1-manager"
       },
-      {} # var.common_tags
+      {Environment = "${var.prefix}"} # var.common_tags
     )
   }
 

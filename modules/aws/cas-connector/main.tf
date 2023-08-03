@@ -254,7 +254,7 @@ resource "aws_instance" "cas-connector" {
       {
         Name = "vol-${var.prefix}-sda1-connector"
       },
-      {} # var.common_tags
+      {Environment = "${var.prefix}"} # var.common_tags
     )
 
   }
