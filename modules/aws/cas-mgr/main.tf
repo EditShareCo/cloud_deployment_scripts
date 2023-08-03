@@ -201,6 +201,12 @@ resource "aws_instance" "cas-mgr" {
   root_block_device {
     volume_type = "gp2"
     volume_size = var.disk_size_gb
+    tags = merge(
+      {
+        Name = "vol-${var.prefix}-sda1-manager"
+      },
+      {} # var.common_tags
+    )
   }
 
   vpc_security_group_ids = var.security_group_ids
