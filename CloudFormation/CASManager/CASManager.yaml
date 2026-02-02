@@ -692,7 +692,7 @@ Resources:
               fi
 
               echo "##### Installing CAS Manager..."
-              curl -1sLf 'https://dl.teradici.com/yj39yHtgj68Uv2Qf/cas-manager/cfg/setup/bash.rpm.sh' | bash
+              curl -1sLf 'https://dl.anyware.hp.com/yj39yHtgj68Uv2Qf/cas-manager/cfg/setup/bash.rpm.sh' | bash
               yum repolist --enabled teradici-cas-manager*
 
               yum install -y selinux-policy-base container-selinux
